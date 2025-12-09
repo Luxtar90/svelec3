@@ -1,0 +1,155 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Notas API",
+    "version": "1.0.0",
+    "description": "API para gestionar notas (CRUD)"
+  },
+  "servers": [
+    {
+      "url": "http://localhost/backend/api"
+    }
+  ],
+  "paths": {
+    "/notes.php": {
+      "get": {
+        "summary": "Listar notas o obtener por id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer" },
+            "description": "Si se incluye, devuelve una sola nota"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de notas o una nota",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    { "type": "array", "items": { "$ref": "#/components/schemas/Note" } },
+                    { "$ref": "#/components/schemas/Note" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nota",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Nota creada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateResponse" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Editar una nota",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": { "$ref": "#/components/schemas/NoteUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Nota editada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UpdateResponse" }
+              }
+            }
+          },
+          "400": { "description": "Faltan campos" }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una nota",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nota eliminada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "NoteInput": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "content": { "type": "string" }
+        },
+        "required": ["title", "content"]
+      },
+      "NoteUpdate": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "content": { "type": "string" }
+        },
+        "required": ["id", "title", "content"]
+      },
+      "CreateResponse": {
+        "type": "object",
+        "properties": { "id": { "type": "integer" } }
+      },
+      "UpdateResponse": {
+        "type": "object",
+        "properties": { "updated": { "type": "integer" } }
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": { "deleted": { "type": "integer" } }
+      }
+    }
+  }
+}
